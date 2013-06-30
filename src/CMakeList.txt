@@ -1,9 +1,0 @@
-cmake_minimum_required(VERSION 2.8)
-PROJECT( blync )
-FIND_PACKAGE( libusb REQUIRED )
-ADD_EXECUTABLE( blync blync.cpp )
-TARGET_LINK_LIBRARIES( blync ${libusb_LIBS} )
-
-#LIST( APPEND CMAKE_CXX_FLAGS "-std=c++0x -Wall -g")
-#LIST( APPEND CMAKE_CXX_FLAGS "-g")
-#LIST( APPEND CMAKE_CXX_FLAGS "-O3")
