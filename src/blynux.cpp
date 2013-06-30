@@ -9,8 +9,6 @@
 static int g_verbose_flag = 0;
 
 static void logging(int level, const char* prefix, const char *format, ...);
-static void logging_va(int level, const char* prefix, const char *format,
-		va_list args);
 
 #define LOG(...) {logging(0, "", __VA_ARGS__);}
 #define ERROR_LOG(...) {logging(1, "EE", __VA_ARGS__);}
@@ -29,25 +27,28 @@ static void logging_va(int level, const char* prefix, const char *format,
 
 static const struct option g_long_options[] = {
 		{ "help", no_argument, NULL, 'h' },
-		{ "verbose", no_argument, NULL, 'v' }, { "device", required_argument,
-				NULL, 'd' }, { "color", required_argument, NULL, 'c' }, { 0, 0,
-				0, 0 } };
+		{ "verbose", no_argument, NULL, 'v' },
+		{ "device", required_argument, NULL, 'd' },
+		{ "color", required_argument, NULL, 'c' },
+		{ 0, 0,	0, 0 }
+};
 
 static const char* g_short_options = "vld:c:h";
 
 static const struct {
 	const char* name;
 	int value;
-} g_colors[] = { { "WHITE", 0x8 }, { "CYAN", 0x9 }, { "MAGENTA", 0xa }, {
-		"BLUE", 0xb }, { "YELLOW", 0xc }, { "GREEN", 0xd }, { "RED", 0xe }, {
-		"OFF", 0xf }, { 0, 0 } };
-
-void logging(int level, const char* prefix, const char *format, ...) {
-	va_list args;
-	va_start(args, format);
-	logging_va(level, prefix, format, args);
-	va_end(args);
-}
+} g_colors[] = {
+		{ "WHITE", 0x8 },
+		{ "CYAN", 0x9 },
+		{ "MAGENTA", 0xa },
+		{ "BLUE", 0xb },
+		{ "YELLOW", 0xc },
+		{ "GREEN", 0xd },
+		{ "RED", 0xe },
+		{ "OFF", 0xf },
+		{ 0, 0 }
+};
 
 static void logging_va(int level, const char* prefix, const char *format,
 		va_list args) {
@@ -57,48 +58,14 @@ static void logging_va(int level, const char* prefix, const char *format,
 	vprintf(format, args);
 }
 
-//void printdev(libusb_device *dev) {
-//	libusb_device_descriptor desc;
-//	int r = libusb_get_device_descriptor(dev, &desc);
-//	if (r < 0) {
-//		std::cout << "failed to get device descriptor" << std::endl;
-//		return;
-//	}
-//	std::cout << "Number of possible configurations: "
-//			<< (int) desc.bNumConfigurations << "  ";
-//	std::cout << "Device Class: " << (int) desc.bDeviceClass << "  ";
-//	std::cout << "VendorID: " << desc.idVendor << "  ";
-//	std::cout << "ProductID: " << desc.idProduct << std::endl;
-//	libusb_config_descriptor *config;
-//	libusb_get_config_descriptor(dev, 0, &config);
-//	std::cout << "Interfaces: " << (int) config->bNumInterfaces << " ||| ";
-//	const libusb_interface *inter;
-//	const libusb_interface_descriptor *interdesc;
-//	const libusb_endpoint_descriptor *epdesc;
-//	for (int i = 0; i < (int) config->bNumInterfaces; i++) {
-//		inter = &config->interface[i];
-//		std::cout << "Number of alternate settings: " << inter->num_altsetting
-//				<< " | ";
-//		for (int j = 0; j < inter->num_altsetting; j++) {
-//			interdesc = &inter->altsetting[j];
-//			std::cout << "Interface Number: "
-//					<< (int) interdesc->bInterfaceNumber << " | ";
-//			std::cout << "Number of endpoints: "
-//					<< (int) interdesc->bNumEndpoints << " | ";
-//			for (int k = 0; k < (int) interdesc->bNumEndpoints; k++) {
-//				epdesc = &interdesc->endpoint[k];
-//				std::cout << "Descriptor Type: "
-//						<< (int) epdesc->bDescriptorType << " | ";
-//				std::cout << "EP Address: " << (int) epdesc->bEndpointAddress
-//						<< " | ";
-//			}
-//		}
-//	}
-//	std::cout << std::endl << std::endl << std::endl;
-//	libusb_free_config_descriptor(config);
-//}
+void logging(int level, const char* prefix, const char *format, ...) {
+	va_list args;
+	va_start(args, format);
+	logging_va(level, prefix, format, args);
+	va_end(args);
+}
 
-bool isBuddy(libusb_device *dev) {
+bool isCompatibleDevice(libusb_device *dev) {
 	libusb_device_descriptor desc;
 	int r = libusb_get_device_descriptor(dev, &desc);
 	if (r < 0) {
@@ -115,7 +82,7 @@ void setColor(libusb_device *device, int color_mask) {
 		return;
 	}
 
-	int intf_num = 1;
+	int intf_num = 1; // interface 0 is also working but cannot be released. Don't know why yet.
 	if (libusb_kernel_driver_active(dev_handle, intf_num) == 1) { //find out if kernel driver is attached
 		INFO_LOG("Kernel Driver Active\n");
 		if (libusb_detach_kernel_driver(dev_handle, intf_num) == 0) //detach it
@@ -157,7 +124,7 @@ int setColorOnDevice(int device_number, int color_mask) {
 		cnt = 0;
 	}
 	for (ssize_t i = 0; i < cnt; i++) {
-		if (isBuddy(list[i])) {
+		if (isCompatibleDevice(list[i])) {
 			if (cpt++ == device_number) {
 				setColor(list[i], color_mask);
 			}
