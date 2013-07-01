@@ -31,3 +31,10 @@ After checking out/cloning the code:
     cmake ..
     make
   
+## How to use it
+
+If you want to use your device in user mode, you need to install this udev rules inside `/etc/udev/rules.d/10-blync.rules`
+
+    SUBSYSTEM=="input", GROUP="input", MODE="0666"
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="1130", ATTRS{idProduct}=="0001", MODE:="666", GROUP="plugdev"
+
