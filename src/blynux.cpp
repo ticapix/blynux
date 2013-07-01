@@ -82,7 +82,7 @@ void setColor(libusb_device *device, int color_mask) {
 		return;
 	}
 
-	int intf_num = 1; // interface 0 is also working but cannot be released. Don't know why yet.
+	int intf_num = 1;
 	if (libusb_kernel_driver_active(dev_handle, intf_num) == 1) { //find out if kernel driver is attached
 		INFO_LOG("Kernel Driver Active\n");
 		if (libusb_detach_kernel_driver(dev_handle, intf_num) == 0) //detach it
@@ -107,7 +107,7 @@ void setColor(libusb_device *device, int color_mask) {
 					wValue, wIndex, data, wLength, timeout)) {
 		ERROR_LOG("Write Control Error\n");
 	}
-	if (libusb_release_interface(dev_handle, 1) != 0) { //release the claimed interface
+	if (libusb_release_interface(dev_handle, intf_num) != 0) { //release the claimed interface
 		ERROR_LOG("Cannot Release Interface");
 	}
 	libusb_close(dev_handle); //close the device we opened
