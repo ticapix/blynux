@@ -18,7 +18,12 @@ The data control payload is { 0x55, 0x53, 0x42, 0x43, 0x00, 0x40, 0x02, 0x0f};
 
 ## How to compile
 
-You need `libusb-1.0-0-dev` package
+You need
+* `cmake >= 2.8` with `FindPkgConfig.cmake` module
+* `libusb-1.0-0-dev` package
+
+
+After checking out/cloning the code:
 
     cd blynux
     mkdir build
