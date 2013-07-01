@@ -4,7 +4,7 @@ Blync for Linux
 
 The device VID:PID are 0x1130:0x0001.
 
-There are 6 colors plus an off command:
+There are 7 colors plus an off command:
 - WHITE
 - CYAN
 - MAGENTA
