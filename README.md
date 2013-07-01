@@ -1,5 +1,4 @@
-Blynux
-======
+# Blynux
 
 Blync for Linux
 
@@ -16,3 +15,14 @@ There are 6 colors plus an off command:
 - OFF
 
 The data control payload is { 0x55, 0x53, 0x42, 0x43, 0x00, 0x40, 0x02, 0x0f};
+
+## How to compile
+
+You need `libusb-1.0-0-dev` package
+
+    cd blynux
+    mkdir build
+    cd build
+    cmake ..
+    make
+  
