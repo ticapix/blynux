@@ -30,6 +30,14 @@ After checking out/cloning the code:
     cd build
     cmake ..
     make
+
+### Install
+
+    make install
+
+### Uninstall
+
+    xargs rm < install_manifest.txt
   
 ## How to use it
 
