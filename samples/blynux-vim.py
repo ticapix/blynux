@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # vim: tabstop=4 softtabstop=4 shiftwidth=4 textwidth=80 smarttab expandtab
+from __future__ import with_statement
 import psutil
 import os
 import sys
@@ -21,9 +22,9 @@ def is_vim_coding(proc):
     if i < 0:
         try:
             ffname = proc.getcwd() + os.sep + fname
-            f = open(ffname, 'r')
-            if f.read(2) == '#!':
-                return True
+            with open(ffname, 'r') as f:
+                if f.read(2) == '#!':
+                    return True
         except:
             pass
     elif fname[i+1:] in VIM_EXTENSIONS:
