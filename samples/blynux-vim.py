@@ -19,9 +19,13 @@ def is_vim_coding(proc):
     fname = proc.cmdline[1]
     i = fname.rfind('.')
     if i < 0:
-        f = open(fname, 'r')
-        if f.read(2) == '#!':
-            return True
+        try:
+            ffname = proc.getcwd() + os.sep + fname
+            f = open(ffname, 'r')
+            if f.read(2) == '#!':
+                return True
+        except:
+            pass
     elif fname[i+1:] in VIM_EXTENSIONS:
         return True
     return False
@@ -51,6 +55,6 @@ try:
                 setColor('green')
 
         time.sleep(1)
-except:
+except KeyboardInterrupt:
     pass
 
