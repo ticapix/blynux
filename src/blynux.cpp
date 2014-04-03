@@ -52,7 +52,7 @@ static const struct {
 
 static void logging_va(int level, const char* prefix, const char *format,
 		va_list args) {
-	if (level < g_verbose_flag)
+	if (level > g_verbose_flag)
 		return;
 	printf("%s ", prefix);
 	vprintf(format, args);
